@@ -18,7 +18,4 @@ public class Countdown extends Thread {
             System.out.println(getName() + ": aborted");
         }
     }
-
-    public static void main(String[] args) {
-    }
 }

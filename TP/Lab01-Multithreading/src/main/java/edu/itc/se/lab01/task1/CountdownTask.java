@@ -16,9 +16,4 @@ public class CountdownTask implements Runnable {
             System.out.println(name + ": aborted");
         }
     }
-
-    public static void main(String[] args) {
-        new Thread(new CountdownTask(), "A").start();
-        new Thread(new CountdownTask(), "B").start();
-    }
 }

@@ -6,8 +6,7 @@ public class Main{
 
         Thread apollo  = new Countdown("apollo");
         Thread gemini  = new Thread(new CountdownTask(), "gemini");
-        Thread mercury = new Thread(() -> {
-            new CountdownTask().run();}, "mercury");
+        Thread mercury = new Thread(() -> { new CountdownTask().run();}, "mercury");
         Runnable artemisTask = new CountdownTask();
         Thread artemis;
 
