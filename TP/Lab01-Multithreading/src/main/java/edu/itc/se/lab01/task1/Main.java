@@ -6,7 +6,19 @@ public class Main{
 
         Thread apollo  = new Countdown("apollo");
         Thread gemini  = new Thread(new CountdownTask(), "gemini");
-        Thread mercury = new Thread(() -> { new CountdownTask().run();}, "mercury");
+        
+        Thread mercury = new Thread(() -> { String name = Thread.currentThread().getName();
+            try {
+                for (int i = 3; i >= 1; i--) {
+                    System.out.println(name + ": " + i);
+                    Thread.sleep(200);
+                }
+                System.out.println(name + ": liftoff!");
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println(name + ": aborted");
+            }
+        }, "mercury");
         Runnable artemisTask = new CountdownTask();
         Thread artemis;
 
