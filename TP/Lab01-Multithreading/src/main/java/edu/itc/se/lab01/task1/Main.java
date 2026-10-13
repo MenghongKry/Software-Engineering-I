@@ -6,7 +6,6 @@ public class Main{
 
         Thread apollo  = new Countdown("apollo");
         Thread gemini  = new Thread(new CountdownTask(), "gemini");
-        
         Thread mercury = new Thread(() -> { String name = Thread.currentThread().getName();
             try {
                 for (int i = 3; i >= 1; i--) {
@@ -21,7 +20,8 @@ public class Main{
         }, "mercury");
         Runnable artemisTask = new CountdownTask();
         Thread artemis;
-
+        System.out.println("Mission control: all launched");
+        
         if (sequential) {
             artemis = Thread.ofVirtual().name("artemis").unstarted(artemisTask);
             apollo.run();
@@ -34,7 +34,6 @@ public class Main{
             mercury.start();
             artemis = Thread.ofVirtual().name("artemis").start(artemisTask);
         }
-        System.out.println("Mission control: all launched");
 
         apollo.join();
         gemini.join();
