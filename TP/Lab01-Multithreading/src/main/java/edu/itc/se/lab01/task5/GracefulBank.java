@@ -2,11 +2,6 @@ package edu.itc.se.lab01.task5;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-/**
- * Step 6: cooperative cancellation. Workers transfer until they are interrupted; main interrupts them after 2 s,
- * waits at most 1 s for them, and checks the balance. Uses TryLockBank's accounts and transfer, whose
- * tryLock and back-off sleep are the blocking calls that can throw InterruptedException.
- */
 public class GracefulBank {
     static final int WORKERS = 8;
     static final long RUN_MS = 2_000;
@@ -31,8 +26,6 @@ public class GracefulBank {
                         TryLockBank.transfer(accounts[a], accounts[b], rnd.nextInt(1, 50));
                         count++;
                     } catch (InterruptedException e) {
-                        // Throwing InterruptedException clears the flag. Set it again so the loop condition
-                        // (and anyone else up the stack) can still see that we were asked to stop.
                         Thread.currentThread().interrupt();
                     }
                 }
@@ -58,7 +51,7 @@ public class GracefulBank {
         boolean allStopped = true, allFlags = true;
         long totalTransfers = 0;
         for (int w = 0; w < WORKERS; w++) {
-            boolean stopped = !workers[w].isAlive();   // join() happens-before: done[w] is visible now
+            boolean stopped = !workers[w].isAlive();
             allStopped &= stopped;
             allFlags &= flagRestored[w];
             totalTransfers += done[w];

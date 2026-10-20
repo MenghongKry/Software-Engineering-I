@@ -2,10 +2,6 @@ package edu.itc.se.lab01.task5;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-/**
- * Steps 1-3: the deliberately broken bank from the lab, plus the watchdog.
- * Two threads transferring A to B and B to A lock the accounts in opposite orders and wait for each other forever.
- */
 public class Bank {
     static final class Account {
         final int id; private long balance;

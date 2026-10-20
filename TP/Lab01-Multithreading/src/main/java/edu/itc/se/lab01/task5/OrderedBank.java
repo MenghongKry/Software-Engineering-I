@@ -2,10 +2,6 @@ package edu.itc.se.lab01.task5;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-/**
- * Step 4, Fix A: always lock the account with the smaller id first.
- * Every thread then takes the locks in the same global order, so a cycle of waiting threads is impossible.
- */
 public class OrderedBank {
     static final int ACCOUNTS = 4;
     static final int WORKERS = 8;

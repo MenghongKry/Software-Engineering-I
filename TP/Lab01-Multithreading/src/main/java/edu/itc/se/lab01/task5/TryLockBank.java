@@ -5,11 +5,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * Step 5, Fix B: never wait forever for a lock.
- * Try both locks with a 10 ms timeout; if either fails, release what we hold, back off for a random moment
- * and try again. A thread holding one lock always gives it up eventually, so no cycle can last.
- */
 public class TryLockBank {
     static final int ACCOUNTS = 4;
     static final int WORKERS = 8;
@@ -26,7 +21,6 @@ public class TryLockBank {
 
     static final LongAdder retries = new LongAdder();
 
-    /** Note: still takes the locks in argument order (the deadlock-prone order), on purpose. tryLock alone breaks the cycle. */
     static void transfer(Account from, Account to, long amount) throws InterruptedException {
         var rnd = ThreadLocalRandom.current();
         while (true) {
@@ -45,7 +39,6 @@ public class TryLockBank {
                 }
             }
             retries.increment();
-            // random back-off so two threads that collided don't retry in lock-step and collide again
             TimeUnit.MICROSECONDS.sleep(rnd.nextInt(1, 100));
         }
     }
@@ -75,7 +68,7 @@ public class TryLockBank {
                         transfer(accounts[a], accounts[b], rnd.nextInt(1, 50));
                     }
                 } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();   // nobody interrupts us here, but never swallow it
+                    Thread.currentThread().interrupt();
                 }
             }, "transfer-" + w);
             workers[w].start();
