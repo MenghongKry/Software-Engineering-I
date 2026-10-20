@@ -106,28 +106,3 @@ The design is one scanner, a bounded queue of 16 paths (back-pressure), N worker
 `ConcurrentHashMap<String, LongAdder>`, a reporter every 500 ms, and one `shutdown()` used by both the shutdown hook
 and the deadline. The challenge README has the scaling table, the `LongAdder`/`merge` versus `synchronized`
 comparison, and the Coffman-condition paragraph.
-
-## Fixes made during this review
-
-Tasks 1-3 were not in this folder, so they were rebuilt from your earlier chats: task 1 from the `Main.java` you
-pasted (with your `Countdown` and `CountdownTask`), tasks 2 and 3 from the last version Claude gave you. Check that
-they match the copy you will submit.
-
-1. **Task 1: the step 5 comment was missing.** It now explains `start()` vs `run()` at the top of `Main`.
-2. **Task 2: no package.** The classes are now in `edu.itc.se.lab01.task2`, matching the lab's layout.
-3. **Challenge: the tool could hang forever on an unreadable file.** When reading a file failed, the worker printed
-   the error and *quit*. Its poison pill was then never taken, so with few workers the scanner blocked on the full
-   queue and `run()` waited on `scanner.join()` forever. Reproduced with one worker and a file without read
-   permission (the process never ended). Now the worker skips that file, prints `(skipped)` and carries on; the
-   same run finishes normally. Tests still pass. `challenge.zip` was updated with the fix.
-4. **Task 4: two small code-quality cleanups.** `allOf(...)` used a raw `CompletableFuture[]` (compiler warning
-   with `-Xlint`), now `CompletableFuture<?>[]`; and a one-element `long[]` used as a variable was replaced by a
-   plain `long`. Output is unchanged.
-
-All other code compiles without warnings and matches the task statements.
-
-## Before you submit
-
-- **Regenerate `task5/deadlock.txt` on your own machine** (the checklist asks for a report from your machine; the one
-  here was made in a cloud container). Steps are in [`task5/README.md`](task5/README.md#steps-1-2-reproduce-the-deadlock-and-capture-it-with-jstack).
-- Compare `task1/`, `task2/` and `task3/` with your own copies (see above).
